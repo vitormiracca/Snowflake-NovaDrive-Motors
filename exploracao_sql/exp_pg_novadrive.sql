@@ -33,7 +33,7 @@ order by v.tipo;
 -- Identifique as concessionárias que venderam mais de 500 veículos.
 SELECT c.concessionaria, COUNT(v.*) AS total_vendas
 FROM vendas v
-join concessionarias c 
+inner join concessionarias c 
 	on v.id_concessionarias = c.id_concessionarias 
 GROUP BY concessionaria
 HAVING COUNT(v.*) > 500;

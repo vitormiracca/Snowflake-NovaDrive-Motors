@@ -21,7 +21,7 @@ Para a arquitetura deste ambiente, iremos contar com tecnologias modernas como:
 - Airflow com Docker: para orquestração dos Data Pipelines;
 - DBT: manipulação e transformação de Dados no Snowflake;
 
-### Em que é estamos:
+### Em que pé estamos:
 
 Configuramos as conexões ao banco de dados transacional da NovaDriver (PostgreSQL), no meu caso usando o DBeaver, para em seguida fizeros uma breve análise exploratória, para conhecer o schema e seus objetos. (/exploracao_sql/exp_pg_novadrive.sql).
 
@@ -30,4 +30,9 @@ Após configurar um par de chaves para conexão SSH nesta instância e definiç�
 
 E em seguida, configuramos nosso ambiente de Data Warehouse no Snowflake, criando um database (novadrive), o primeiro schema para o pouso inicial dos dados na camada analítica (stage) e os objetos necessários dentro deste schema, como também o Warehouse para os recursos computacionais e de processamento. Como este primeiro schema se trata da extração dos dados do banco de dados relacional (PostgreSQL), criamos os mesmos objetos lá presentes (/infra/config_snowflake.sql)
 
-Para os próximos passos itemos escrever nossas primeiras DAGs para extração do banco de dados transacional à camada analítica.
+Desenvolvemos uma grande dag Dinamica para carrgeamento dos dados de forma incremental no Snowflake.
+"Dinâmica" pois a estrutura do Banco de Dados Relacional permite isso, pois todas as tabelas possuem um padrão de chave primária (sendo sempre "id_[nome_da_tabela]"), e como foi decidido seguir com carga incremental, podemos colocar todas as tabelas numa lista, e percorrer esta lista para gerar tasks dinâmica.
+Para as tasks, definimos duas tasks para cada tabela: uma onde buscamos o registro com o último id da tabela (chave pramária) lá no Snowflake, e uma outra task que insere os registros com id (chave primária) que ainda não existem no Snowflake, ou seja, incrementa os novos registros na camada analítica.
+
+Este passo é o passo inicial do ELT, onde extraimos e carregamos os dados numa landing zone no ambiente análitico.
+Para as próximas etapas, concentramos os esforços no T de Transform, visando gerar tabelas análiticas, de acordo com as necessidades do time de negócios.
