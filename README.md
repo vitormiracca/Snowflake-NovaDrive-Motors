@@ -26,7 +26,7 @@ Para a arquitetura deste ambiente, iremos contar com tecnologias modernas como:
 ### - Configurações Iniciais:
 
 - Configuração das conexões ao banco de dados transacional da NovaDrive Motors (PostgreSQL), no meu caso usando o DBeaver.
-    - Análise Exploratório dos dados para conhecer o schema e suas entidades. (/exploracao_sql/exp_pg_novadrive.sql)
+    - Análise Exploratório dos dados para conhecer o schema e suas entidades. */exploracao_sql/exp_pg_novadrive.sql*
 
 - Subimos uma instância EC2 na AWS, com Airflow rodando em um container Docker, e configuramos as devidas chaves SSH, roles de segurança (porta 8080 para o Airflow), e demais configurações. 
     - Instalção do Airflow com Docker no EC2 em: */infra/instalacao_airflow_docker.sh*
@@ -40,6 +40,7 @@ Para a arquitetura deste ambiente, iremos contar com tecnologias modernas como:
     - "Dinâmica" pois a estrutura do Banco de Dados Relacional permite isso, pois todas as tabelas possuem um padrão de chave primária (sendo sempre "id_[nome_da_tabela]"), portanto podemos colocar todas as tabelas numa lista, e percorrer esta lista para gerar tasks dinâmica.
     - Para as tasks, definimos duas tasks para cada tabela: uma onde buscamos o registro com o último id da tabela (chave pramária) lá no Snowflake, e uma outra task que insere os registros com id (chave primária) que ainda não existem no Snowflake, ou seja, incrementa os novos registros na camada analítica.
     - Resultado: extraimos e carregamos os dados numa landing zone no ambiente análitico.
+    - *src/dag.py*
 
 ### - Transformação
 
@@ -50,6 +51,7 @@ Para a arquitetura deste ambiente, iremos contar com tecnologias modernas como:
     - analysis;
 
 - Desenvolvimentos das querys SQL no DBT, para transformação dos dados e inserção nas camadas de dados estruturados no Snowflake (a partir do DBT).
+    - *src/DBT/**
 
 ### - Resultado e Manutenção
 
